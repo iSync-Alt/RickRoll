@@ -6,6 +6,8 @@ const dotenv = require("dotenv");
 dotenv.config();
 const db = require('quick.db')
 const ytdl = require("ytdl-core");
+const queue = new Map();
+
 
 
 
@@ -20,19 +22,8 @@ app.listen(3000, () => {
 let Discord = require("discord.js");
 let client = new Discord.Client()
 
-const queue = new Map();
 
-client.once("ready", () => {
-  console.log("Ready!");
-});
 
-client.once("reconnecting", () => {
-  console.log("Reconnecting!");
-});
-
-client.once("disconnect", () => {
-  console.log("Disconnect!");
-});
 
 
 client.commands = new Discord.Collection();
@@ -65,7 +56,20 @@ client.on("messageDelete", deletedMsg => {
 	})
 console.log("Made extention : snipe")
 
+ client.once("ready", () => {
+  console.log("Ready!");
+});
+
+client.once("reconnecting", () => {
+  console.log("Reconnecting!");
+});
+
+client.once("disconnect", () => {
+  console.log("Disconnect!");
+});
+
 client.on("message", async message => {
+	const serverQueue = queue.get(message.guild.id);
 	if(!message.content.toLowerCase().startsWith(prefix)) return;
 	if (talkedRecently.has(message.author.id)) return message.delete()
 	if (talkedRecently.has(message.author.id)) return message.channel.send("Please wait 5 seconds before executing any commands! (Anti-spam mechanice)");
@@ -317,7 +321,7 @@ if(message.content.toLowerCase() === prefix + "help mod") {
 		let serverinfoembed = new Discord.MessageEmbed()
 		.setColor("BLUE")
 		.setTitle("Server info for: " + `${message.guild.name}`)
-		.setDescription("Server name: " + `${message.guild.name}` + "\nServer size: " + `${message.guild.memberCount}` + "\n Server ID: " + `${message.guild.id}` + "\nServer Emojis: " + `${emoji}`)
+		.setDescription("Server name: " + `${message.guild.name}` + "\nServer size: " + `${message.guild.memberCount}` + "\n Server ID: " + `${message.guild.id}` + "\nServer Emojis: " + `${emoji}\n Server channel count: ${message.guild.channels.size}\n server voice channel count: ${message.guild.channels.filter(c => c.type === 'voice').size}`)
 		.setFooter(`${message.author.tag}`, message.author.displayAvatarURL({dymamic: true}))
 		.setTimestamp()
 		.setThumbnail(message.guild.iconURL({dynamic: true}))
@@ -325,20 +329,7 @@ if(message.content.toLowerCase() === prefix + "help mod") {
 		.then((sentMessage) => sentMessage.react("✔"));
 	}
 	
-  const serverQueue = queue.get(message.guild.id);
-
-  if (message.content.startsWith(`${prefix}play`)) {
-    execute(message, serverQueue);
-    return;
-  } else if (message.content.startsWith(`${prefix}skip`)) {
-    skip(message, serverQueue);
-    return;
-  } else if (message.content.startsWith(`${prefix}stop`)) {
-    stop(message, serverQueue);
-    return;
-  } else {
-    message.channel.send("You need to enter a valid command!");
-  }
+  
 if (talkedRecently.has(message.author.id)) {
             message.channel.send("Wait 5 seconds before getting typing this again. - " + message.author.username);
 						message.delete()
@@ -355,97 +346,7 @@ if (talkedRecently.has(message.author.id)) {
  talkedRecently.add(message.author.id);
 
 });
-async function execute(message, serverQueue) {
-  const args = message.content.split(" ");
 
-  const voiceChannel = message.member.voice.channel;
-  if (!voiceChannel)
-    return message.channel.send(
-      "You need to be in a voice channel to play music!"
-    );
-  const permissions = voiceChannel.permissionsFor(message.client.user);
-  if (!permissions.has("CONNECT") || !permissions.has("SPEAK")) {
-    return message.channel.send(
-      "I need the permissions to join and speak in your voice channel!"
-    );
-  }
-
-  const songInfo = await ytdl.getInfo(args[1]);
-  const song = {
-        title: songInfo.videoDetails.title,
-        url: songInfo.videoDetails.video_url,
-   };
-
-  if (!serverQueue) {
-    const queueContruct = {
-      textChannel: message.channel,
-      voiceChannel: voiceChannel,
-      connection: null,
-      songs: [],
-      volume: 5,
-      playing: true
-    };
-
-    queue.set(message.guild.id, queueContruct);
-
-    queueContruct.songs.push(song);
-
-    try {
-      var connection = await voiceChannel.join();
-      queueContruct.connection = connection;
-      play(message.guild, queueContruct.songs[0]);
-    } catch (err) {
-      console.log(err);
-      queue.delete(message.guild.id);
-      return message.channel.send(err);
-    }
-  } else {
-    serverQueue.songs.push(song);
-    return message.channel.send(`${song.title} has been added to the queue!`);
-  }
-}
-
-function skip(message, serverQueue) {
-  if (!message.member.voice.channel)
-    return message.channel.send(
-      "You have to be in a voice channel to stop the music!"
-    );
-  if (!serverQueue)
-    return message.channel.send("There is no song that I could skip!");
-  serverQueue.connection.dispatcher.end();
-}
-
-function stop(message, serverQueue) {
-  if (!message.member.voice.channel)
-    return message.channel.send(
-      "You have to be in a voice channel to stop the music!"
-    );
-    
-  if (!serverQueue)
-    return message.channel.send("There is no song that I could stop!");
-    
-  serverQueue.songs = [];
-  serverQueue.connection.dispatcher.end();
-}
-
-function play(guild, song) {
-  const serverQueue = queue.get(guild.id);
-  if (!song) {
-    serverQueue.voiceChannel.leave();
-    queue.delete(guild.id);
-    return;
-  }
-
-  const dispatcher = serverQueue.connection
-    .play(ytdl(song.url))
-    .on("finish", () => {
-      serverQueue.songs.shift();
-      play(guild, serverQueue.songs[0]);
-    })
-    .on("error", error => console.error(error));
-  dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
-  serverQueue.textChannel.send(`Start playing: **${song.title}**`);
-}
 
 client.on("message", async message => {
 	if (!message.content.startsWith(prefix) || message.author.bot) return;
@@ -461,6 +362,15 @@ const avatarList = message.mentions.users.map(user => {
 });
 
 message.channel.send(avatarList);
+	}
+	if(command === 'info') {
+		let infoembed = new Discord.MessageEmbed()
+		.setColor("RED")
+		.setTitle(`Bot info, ${message.author.tag}!`)
+		.setDescription(`Serving in: **${client.guilds.cache.size}** Servers,\n **${client.channels.cache.size}** Channels, \n**${client.guilds.cache.reduce((a, g) => a + g.memberCount, 0)}** Members.` + "\nCoded using **NODE.JS**/**JAVASCRIPT**")
+		.setFooter(`${message.author.tag} ・w・` ,message.author.displayAvatarURL({dynamic: true}))
+		.setTimestamp()
+		message.channel.send(infoembed)
 	}
 
 
