@@ -4,9 +4,7 @@ const talkedRecently = new Set();
 const fs = require('fs');
 const dotenv = require("dotenv");
 dotenv.config();
-const db = require('quick.db')
-const ytdl = require("ytdl-core");
-const queue = new Map();
+
 
 
 

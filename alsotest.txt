@@ -9,3 +9,7 @@ if (message.content.startsWith(`${prefix}play`)) {
     stop(message, serverQueue);
     return;
   } 
+	//
+	const db = require('quick.db')
+const ytdl = require("ytdl-core");
+const queue = new Map();
