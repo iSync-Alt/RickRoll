@@ -303,7 +303,7 @@ if(message.content.toLowerCase() === prefix + "help mod") {
 		let serverinfoembed = new Discord.MessageEmbed()
 		.setColor("BLUE")
 		.setTitle("Server info for: " + `${message.guild.name}`)
-		.setDescription("Server name: " + `${message.guild.name}` + "\nServer size: " + `${message.guild.memberCount}` + "\n Server ID: " + `${message.guild.id}` + "\nServer Emojis: " + `${emoji}`)
+		.setDescription("Server name: " + `${message.guild.name}` + "\nServer size: " + `${message.guild.memberCount}` + "\n Server ID: " + `${message.guild.id}` + "\nServer Emojis: " + `${emoji}\n Server created at: ${message.guild.createdAt}`)
 		.setFooter(`${message.author.tag}`, message.author.displayAvatarURL({dymamic: true}))
 		.setTimestamp()
 		.setThumbnail(message.guild.iconURL({dynamic: true}))
@@ -324,7 +324,7 @@ if (talkedRecently.has(message.author.id)) {
         setTimeout(() => {
           talkedRecently.delete(message.author.id);
         }, 5000);
-				console.log(`Set cooldown for Tag:${message.author.tag} ID:${message.author.id} for 5000 ms (5 seconds!)`)
+			
     }
 
  talkedRecently.add(message.author.id);
