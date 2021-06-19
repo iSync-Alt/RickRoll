@@ -321,7 +321,7 @@ if(message.content.toLowerCase() === prefix + "help mod") {
 		let serverinfoembed = new Discord.MessageEmbed()
 		.setColor("BLUE")
 		.setTitle("Server info for: " + `${message.guild.name}`)
-		.setDescription("Server name: " + `${message.guild.name}` + "\nServer size: " + `${message.guild.memberCount}` + "\n Server ID: " + `${message.guild.id}` + "\nServer Emojis: " + `${emoji}\n Server channel count: ${message.guild.channels.size}\n server voice channel count: ${message.guild.channels.filter(c => c.type === 'voice').size}`)
+		.setDescription("Server name: " + `${message.guild.name}` + "\nServer size: " + `${message.guild.memberCount}` + "\n Server ID: " + `${message.guild.id}` + "\nServer Emojis: " + `${emoji}\n Server channel count: ${message.guild.channels.size}\n`)
 		.setFooter(`${message.author.tag}`, message.author.displayAvatarURL({dymamic: true}))
 		.setTimestamp()
 		.setThumbnail(message.guild.iconURL({dynamic: true}))
