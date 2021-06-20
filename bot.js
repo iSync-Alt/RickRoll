@@ -1,4 +1,3 @@
-
 const express = require("express")
 const app = express ()
 const talkedRecently = new Set();
@@ -86,6 +85,15 @@ client.on("message", async message => {
 	if (message.author.bot) return false;
 		const args2 = message.content.slice(prefix.length).trim().split(/ +/);
 	console.log("Set filters ()!")
+	if(message.content.toLowerCase() === prefix + "info") {
+		let infoembed = new Discord.MessageEmbed()
+		.setColor("RED")
+		.setTitle(`Bot info, ${message.author.tag}!`)
+		.setDescription(`Serving in: **${client.guilds.cache.size}** Servers,\n **${client.channels.cache.size}** Channels, \n**${client.guilds.cache.reduce((a, g) => a + g.memberCount, 0)}** Members.` + "\nCoded using **NODE.JS**/**JAVASCRIPT**")
+		.setFooter(`${message.author.tag} ・w・` ,message.author.displayAvatarURL({dynamic: true}))
+		.setTimestamp()
+		message.channel.send(infoembed)
+	}
 	if(message.content.toLowerCase() === prefix + "nuke") {
 		if (!message.member.hasPermission("MANAGE_CHANNELS")) return message.channel.send("**You don't have perms (Manage server - if you think this is a mistake please contact your server's admin. ERR)**")
 		message.channel.clone().then((ch => {

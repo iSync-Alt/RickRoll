@@ -5,6 +5,7 @@ module.exports = {
 	name: 'help fun',
 	description: 'not-as-epic cmmd :cries:',
 	category: 'very very very very very BORING CMMDS',
+	cooldown: '5',
 	execute(message) {
 		let funhelpembed = new Discord.MessageEmbed()
 		.setTitle(`**Help has came, ${message.author.tag}!**`)

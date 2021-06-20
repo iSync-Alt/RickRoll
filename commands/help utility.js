@@ -5,6 +5,7 @@ module.export = {
 	name: 'help utility',
 	description: 'also help',
 	category: 'uwu',
+	cooldwon: '5',
 	execute(message) {
 		let utilityhelpembed = new Discord.MessageEmbed()
 		.setTitle(`**Help has came, ${message.author.tag}!**`)
