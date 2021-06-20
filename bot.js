@@ -259,7 +259,7 @@ if(message.content.toLowerCase().startsWith(prefix + "purge") || message.content
 	.then((sentMessage) => sentMessage.react("✂"))
 	.then((sentMessage) => sentMessage.react("✔"))
 }
-if(message.content.toLowerCase().startsWith(prefix + "say") || message.content.toLowerCase().startsWith(prefix + "talk") || message.content.toLowerCase().startsWith(prefix + "send")) {
+if(message.content.toLowerCase().startsWith(prefix + "poll")) {
 	let messageToSay = args.join(" ");
 	let SayEmbed = new Discord.MessageEmbed()
 	.setTitle(`${message.author.tag}`)
@@ -269,7 +269,12 @@ if(message.content.toLowerCase().startsWith(prefix + "say") || message.content.t
 	.setTimestamp()
 	.setURL("https://discord.com")
 	message.delete()
-	await message.channel.send(SayEmbed);
+	await message.channel.send(SayEmbed)
+	.then(sentMessage => {
+      sentMessage.react('✅')
+      sentMessage.react('🤷‍♂️')
+			sentMessage.react('❌')
+	});
 
 }
 	  helloSet.add(message.author.id)
@@ -307,22 +312,9 @@ client.on("message", async message => {
 const avatarList = message.mentions.users.map(user => {
 	return `${user.displayAvatarURL({ format: 'png', dynamic: true })}`;
 });
-
 message.channel.send(avatarList);
 	}
-	if(command === "search") {
-		let search = new Discord.MessageEmbed()
-		.setColor("BLUE")
-		.setTitle("Search something!")
-		.setFooter("WIP" ,message.author.displayAvatarURL({dynamic: true}))
-		.setThumbnail("https://cdn.discordapp.com/attachments/853115299784294460/855658540088950795/imageedit_2_2183856551.png")
-		.setTimestamp()
-		message.channel.send(search)
-		message.channel.send("WIP!");
-	}
-
-
-});
+	});
 client.on('shardError', error => {
 	console.error('A websocket connection encountered an error:', error);
 });
