@@ -6,6 +6,10 @@ module.export = {
 	description: 'also help',
 	category: 'uwu',
 	cooldwon: '5',
+	throttling: {
+				usages: 2,
+				duration: 10,
+			},
 	execute(message) {
 		let utilityhelpembed = new Discord.MessageEmbed()
 		.setTitle(`**Help has came, ${message.author.tag}!**`)

@@ -6,6 +6,10 @@ module.export = {
 	description: 'yiss, another boring "ping", "pong" commad that none cares about lol',
 	category: 'boring commands',
 	cooldown: '5',
+	throttling: {
+				usages: 2,
+				duration: 10,
+			},
 	execute(command) {
 		if(message.content.toLowerCase() === prefix + "ping") {
 	message.channel.send(`Latency is ${Date.now() - message.createdTimestamp}ms.`)

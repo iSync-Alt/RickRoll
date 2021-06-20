@@ -7,6 +7,10 @@ module.exports = {
 	description: 'VERY EPIC SERVER COMMAND!!!1!11!!!1!',
 	catergory: "SUPeR EPIC COMMANDS!!!!!!!!!!!!!!!!!!",
 	cooldown: '5',
+	throttling: {
+				usages: 2,
+				duration: 10,
+			},
 	execute(message) {
 		const emoji = message.guild.emojis.cache.array();
 		let serverinfoembed = new Discord.MessageEmbed()

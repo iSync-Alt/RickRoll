@@ -9,7 +9,7 @@ dotenv.config();
 
 
 app.get("/", (req, res) => {
-	res.send("LOL")
+	res.send("OwO")
 })
 
 app.listen(3000, () => {
@@ -59,6 +59,7 @@ client.on('message', message => {
 	if (!message.content.startsWith(prefix) || message.author.bot) return;
 
 	const args = message.content.slice(prefix.length).trim().split(/ +/);
+	const args2 = message.content.slice(prefix.length).trim().split(" ").slice(1)
 	const command = args.shift().toLowerCase();
 
 
@@ -71,7 +72,6 @@ client.on('message', message => {
 		message.reply('there was an error trying to execute that command!');
 	}
 });
-
 
 
 client.on("message", async message => { 

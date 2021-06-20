@@ -6,6 +6,10 @@ module.exports = {
 	description: 'not-as-epic cmmd :cries:',
 	category: 'very very very very very BORING CMMDS',
 	cooldown: '5',
+	throttling: {
+				usages: 2,
+				duration: 10,
+			},
 	execute(message) {
 		let funhelpembed = new Discord.MessageEmbed()
 		.setTitle(`**Help has came, ${message.author.tag}!**`)
